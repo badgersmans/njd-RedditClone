@@ -14,7 +14,7 @@ export default function PostListItem({post}: PostListItem) {
       <View style={styles.headerContainer}>
         <Image source={{ uri: post.group.image }} style={styles.headerImage} />
         <View style={styles.headerGroup}>
-          <Text style={styles.headerTitle}>{post.title}</Text>
+          <Text style={styles.headerTitle}>{post.group.name}</Text>
           <Text style={styles.date}>{formatDistanceToNowStrict(post.created_at)} ago</Text>
         </View>
 
