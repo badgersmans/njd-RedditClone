@@ -1,17 +1,20 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import posts from '../../assets/data/posts.json'
 import { formatDistanceToNowStrict } from 'date-fns'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Post } from '../types/types';
 
-export default function PostListItem() {
-  const post = posts[2]
+type PostListItem = {
+  post: Post
+}
+
+export default function PostListItem({post}: PostListItem) {
 
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Image source={{ uri: post.group.image }} style={styles.headerImage} />
         <View style={styles.headerGroup}>
-          <Text style={styles.headerTitle}>{post.group.name}</Text>
+          <Text style={styles.headerTitle}>{post.title}</Text>
           <Text style={styles.date}>{formatDistanceToNowStrict(post.created_at)} ago</Text>
         </View>
 

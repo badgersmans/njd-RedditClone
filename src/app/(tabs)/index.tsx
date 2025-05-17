@@ -1,12 +1,12 @@
 import { View } from 'react-native'
 import PostListItem from '../../components/PostListItem';
+import posts from '../../../assets/data/posts.json'
 
 export default function HomeScreen() {
-  // console.log(post)
   return (
     <View>
-      <PostListItem />
-      <PostListItem />
+      <PostListItem post={posts[1]}/>
+      <PostListItem post={posts[0]}/>
     </View>
   )
 }
