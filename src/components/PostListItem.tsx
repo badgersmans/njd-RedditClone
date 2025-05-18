@@ -5,22 +5,27 @@ import { Post } from '../types/types';
 import { Link } from 'expo-router';
 
 type PostListItem = {
-  post: Post
+  post: Post,
+  isDetailedPost?: boolean
 }
 
-export default function PostListItem({post}: PostListItem) {
+export default function PostListItem({post, isDetailedPost}: PostListItem) {
 
   return (
     <Link href={`/post/${post.id}`}>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Image source={{ uri: post.group.image }} style={styles.headerImage} />
-          <View style={styles.headerGroup}>
-            <Text style={styles.headerTitle}>{post.group.name}</Text>
-            <Text style={styles.date}>{formatDistanceToNowStrict(post.created_at)} ago</Text>
+
+          <View>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.groupName}>{post.group.name}</Text>
+              <Text style={styles.date}>{formatDistanceToNowStrict(post.created_at)}</Text>
+            </View>
+            {isDetailedPost && <Text style={styles.username}>{post.user.name}</Text>}
           </View>
 
-          <TouchableOpacity>
+          <TouchableOpacity style={{marginLeft: 'auto'}}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Join</Text>
             </View>
@@ -71,25 +76,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     alignItems: 'center',
-    marginBottom: 8
+    marginBottom: 8,
+    // backgroundColor: 'green'
   },
   headerImage: {
     width: 30,
     height: 30,
     borderRadius: 20
   },
-  headerGroup: {
-    flex: 1,
-    flexDirection: 'row',
-    gap: 5,
-  },
   headerTitle: {
     fontWeight: 'semibold',
-    fontSize: 12
+    fontSize: 12,
+  },
+  groupName: {
+    marginRight: 10
   },
   date: {
     color: 'grey',
     // fontSize: 11
+  },
+  username:{
+    color: 'grey',
+    marginTop: 3
   },
   button: {
     backgroundColor: '#1E4396',
