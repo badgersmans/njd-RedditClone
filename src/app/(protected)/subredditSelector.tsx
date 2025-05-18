@@ -15,10 +15,9 @@ export default function SubredditSelector() {
   const filteredSubreddits = groups.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
 
   const onSelectSubreddit = (group: Group) => {
-    console.log('Selected:', group.name);
-
+    // console.log('Selected:', group.name);
     setSubreddit(group)
-
+  
     router.back()
   }
   // console.log(filteredSubreddits)
