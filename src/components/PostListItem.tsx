@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   headerTitle: {
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
     fontSize: 12
   },
   date: {

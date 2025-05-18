@@ -1,10 +1,29 @@
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Tabs } from 'expo-router';
+import { View, Text, TouchableOpacity } from "react-native";
+import { useAuth } from "@clerk/clerk-expo";
 
 export default function HomeScreenLayout() {
+  const {signOut} = useAuth()
+
   return (
     <Tabs
-      screenOptions={{ tabBarActiveTintColor: 'black' }}
+      screenOptions={{ 
+        tabBarActiveTintColor: 'black',
+        headerRight: () =>
+          <TouchableOpacity 
+            onPress={() => signOut()}
+            style={{flexDirection: 'row', alignItems: 'center', marginRight: 20}}
+          >
+            <Feather
+              name="log-out"
+              size={18}
+              color="black"
+              style={{ paddingLeft: 8, transform: [{ scaleX: -1 }] }}
+            />
+              <Text>Sign Out</Text>
+          </TouchableOpacity>
+      }}
     >
       <Tabs.Screen
         name="index"
