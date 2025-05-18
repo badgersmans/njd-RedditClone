@@ -9,6 +9,6 @@ export default function ProtectedRoutesRootLayout() {
   }
 
   return (
-    <Stack />
+    <Stack screenOptions={{headerShown: false}}/>
   )
 }

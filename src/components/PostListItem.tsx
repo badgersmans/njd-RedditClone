@@ -67,8 +67,9 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    gap: 15,
-    alignItems: 'center'
+    gap: 10,
+    alignItems: 'center',
+    marginBottom: 8
   },
   headerImage: {
     width: 30,
@@ -78,11 +79,11 @@ const styles = StyleSheet.create({
   headerGroup: {
     flex: 1,
     flexDirection: 'row',
-    gap: 6
+    gap: 5,
   },
   headerTitle: {
     fontWeight: 'bold',
-    // fontSize: 12
+    fontSize: 12
   },
   date: {
     color: 'grey',
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
     // letterSpacing: 0.25
   },
   image: {
