@@ -1,14 +1,25 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {Ionicons} from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useState } from 'react';
 
 export default function Create() {
+
+  const [title, setTitle] = useState<string>('')
+  const [body, setBody] = useState<string>('')
+
+  const onGoBack = () => {
+    setTitle('')
+    setBody('')
+    router.back()
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* HEADER */}
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={onGoBack}>
           <Ionicons name="close-outline" size={30} color="black" />
         </TouchableOpacity>
 
@@ -21,10 +32,31 @@ export default function Create() {
       {/* END HEADER */}
 
       {/* SUBREDDIT SELECTOR */}
-      <View style={styles.subredditPicker}>
-        <Text style={styles.rText}>r/</Text>
-        <Text style={styles.selectCommunityText}>Select a community</Text>
-      </View>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
+        <ScrollView showsVerticalScrollIndicator={false} style={{paddingVertical: 10}}>
+          <View style={styles.subredditPicker}>
+            <Text style={styles.rText}>r/</Text>
+            <Text style={styles.selectCommunityText}>Select a community</Text>
+          </View>
+
+          {/* INPUTS */}
+          <TextInput 
+            placeholder='Title'
+            style={styles.titleInput}
+            value={title}
+            onChangeText={setTitle}
+            multiline
+            scrollEnabled={false}
+          />
+          <TextInput 
+            placeholder='Write your post'
+            value={body}
+            onChangeText={setBody}
+            multiline
+            scrollEnabled={false}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
@@ -32,7 +64,8 @@ export default function Create() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    paddingHorizontal: 10
   },
   headerContainer: {
     flexDirection: 'row',
@@ -68,4 +101,9 @@ const styles = StyleSheet.create({
   selectCommunityText: {
     fontWeight: '500'
   },
+  titleInput: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    paddingVertical: 20
+  }
 })
