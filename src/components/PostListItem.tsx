@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 15,
     paddingVertical: 10,
+    backgroundColor: 'white'
   },
   headerContainer: {
     flexDirection: 'row',
@@ -100,12 +101,13 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 20,
-    letterSpacing: 0.25
+    // letterSpacing: 0.25
   },
   image: {
     width: '100%',
     aspectRatio: 4 / 3,
-    borderRadius: 15
+    borderRadius: 15,
+    marginTop: 10,
   },
   description: {
     marginTop: 10,
@@ -122,6 +124,7 @@ const styles = StyleSheet.create({
     borderColor: '#D4D4D4',
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 20
+    borderRadius: 20,
+    marginTop: 15
   },
 })

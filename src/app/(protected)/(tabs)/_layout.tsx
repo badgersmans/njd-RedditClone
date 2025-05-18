@@ -1,8 +1,7 @@
-import { View, Text } from 'react-native'
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { Tabs } from 'expo-router';
 
-export default function _layout() {
+export default function HomeScreenLayout() {
   return (
     <Tabs
       screenOptions={{ tabBarActiveTintColor: 'black' }}
