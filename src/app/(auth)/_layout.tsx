@@ -8,5 +8,11 @@ export default function AuthRoutesRootLayout() {
     return <Redirect href={'/'} />
   }
 
-  return <Stack />
+  return (
+    // <Stack>
+    //   <Stack.Screen name='login' options={{title: ''}} />
+    //   <Stack.Screen name='register' options={{title: ''}} />
+    // </Stack>
+    <Stack screenOptions={{headerShown: false}}/>
+  )
 }
