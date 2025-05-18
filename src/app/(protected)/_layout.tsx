@@ -15,6 +15,18 @@ export default function ProtectedRoutesRootLayout() {
     <Stack>
       <Stack.Screen name='(tabs)' options={{headerShown: false}}/>
       <Stack.Screen 
+        name='subredditSelector' 
+        options={{ 
+          presentation: 'fullScreenModal',
+          headerTitle: 'Post to',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="close-outline" size={30} color="black" />
+            </TouchableOpacity>
+          )
+        }} 
+      />
+      <Stack.Screen 
         name='post/[id]' 
         options={{
           headerTitle: '',

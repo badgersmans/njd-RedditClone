@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {Ionicons} from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useState } from 'react';
 
 export default function Create() {
@@ -23,7 +23,7 @@ export default function Create() {
           <Ionicons name="close-outline" size={30} color="black" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={{marginLeft: 'auto'}} onPress={() => console.log('pressed...')}>
+        <TouchableOpacity style={{marginLeft: 'auto'}} onPress={() => console.log('post pressed...')}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>Post</Text>
           </View>
@@ -34,10 +34,12 @@ export default function Create() {
       {/* SUBREDDIT SELECTOR */}
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1}}>
         <ScrollView showsVerticalScrollIndicator={false} style={{paddingVertical: 10}}>
-          <View style={styles.subredditPicker}>
-            <Text style={styles.rText}>r/</Text>
-            <Text style={styles.selectCommunityText}>Select a community</Text>
-          </View>
+          <Link href={'/subredditSelector'} asChild>
+            <TouchableOpacity style={styles.subredditPicker}>
+              <Text style={styles.rText}>r/</Text>
+              <Text style={styles.selectCommunityText}>Select a community</Text>
+            </TouchableOpacity>
+          </Link>
 
           {/* INPUTS */}
           <TextInput 
