@@ -1,17 +1,22 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView, Image} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {Ionicons} from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import { useState } from 'react';
+import { useAtom } from "jotai";
+import { selectedSubredditAtom } from '../../../atoms';
 
 export default function Create() {
 
   const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<string>('')
+  const [subreddit, setSubreddit] = useAtom(selectedSubredditAtom);
 
   const onGoBack = () => {
     setTitle('')
     setBody('')
+    setSubreddit(null);
+
     router.back()
   }
 
@@ -36,8 +41,17 @@ export default function Create() {
         <ScrollView showsVerticalScrollIndicator={false} style={{paddingVertical: 10}}>
           <Link href={'/subredditSelector'} asChild>
             <TouchableOpacity style={styles.subredditPicker}>
-              <Text style={styles.rText}>r/</Text>
-              <Text style={styles.selectCommunityText}>Select a community</Text>
+              {subreddit ? (
+                <>
+                  <Image source={{uri: subreddit.image}} style={styles.image}/>
+                  <Text>{subreddit.name}</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.rText}>r/</Text>
+                  <Text style={styles.selectCommunityText}>Select a community</Text>
+                </>
+              )}
             </TouchableOpacity>
           </Link>
 
@@ -92,6 +106,11 @@ const styles = StyleSheet.create({
     gap: 7,
     alignSelf: 'flex-start',
     marginVertical: 10,
+  },
+  image: {
+    height: 20,
+    aspectRatio: 1/1,
+    borderRadius: 10
   },
   rText: {
     backgroundColor: 'black',

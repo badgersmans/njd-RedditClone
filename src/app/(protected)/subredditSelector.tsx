@@ -3,18 +3,31 @@ import groups from '../../../assets/data/groups.json'
 import { useState } from 'react'
 import {AntDesign, EvilIcons} from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSetAtom } from 'jotai';
+import { selectedSubredditAtom } from '../../atoms'
+import { router } from 'expo-router';
+import { Group } from '../../types/types';
 
 export default function SubredditSelector() {
   const [search, setSearch] = useState<string>('')
+  const setSubreddit = useSetAtom(selectedSubredditAtom);
 
-  const filteredSubreddits = groups.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())  )
+  const filteredSubreddits = groups.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+
+  const onSelectSubreddit = (group: Group) => {
+    console.log('Selected:', group.name);
+
+    setSubreddit(group)
+
+    router.back()
+  }
   // console.log(filteredSubreddits)
 
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       <View style={styles.searchBox}>
         <AntDesign name="search1" size={21} color="grey" />
-        <TextInput 
+        <TextInput
           placeholder='Search for a community'
           value={search}
           onChangeText={setSearch}
@@ -30,11 +43,11 @@ export default function SubredditSelector() {
 
       <FlatList 
         data={filteredSubreddits}
-        renderItem={(group) => (
-          <TouchableOpacity>
+        renderItem={({item}) => (
+          <TouchableOpacity onPress={() => onSelectSubreddit(item)}>
             <View style={styles.listContainer}>
-              <Image source={{uri: group.item.image}} style={styles.image}/>
-              <Text>{group.item.name}</Text>
+              <Image source={{uri: item.image}} style={styles.image}/>
+              <Text>{item.name}</Text>
             </View>
           </TouchableOpacity>
         )}
