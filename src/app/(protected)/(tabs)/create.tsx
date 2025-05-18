@@ -44,7 +44,7 @@ export default function Create() {
               {subreddit ? (
                 <>
                   <Image source={{uri: subreddit.image}} style={styles.image}/>
-                  <Text>{subreddit.name}</Text>
+                  <Text style={{fontWeight: '600'}}>{subreddit.name}</Text>
                 </>
               ) : (
                 <>
