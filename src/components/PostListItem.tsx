@@ -10,7 +10,8 @@ type PostListItem = {
 }
 
 export default function PostListItem({post, isDetailedPost}: PostListItem) {
-
+  const shouldShowImage = isDetailedPost || post.image // is detailed post OR has image
+  const shouldShowDescription = isDetailedPost || !post.image // is detailed post OR has NO image
   return (
     <Link href={`/post/${post.id}`}>
       <View style={styles.container}>
@@ -34,11 +35,11 @@ export default function PostListItem({post, isDetailedPost}: PostListItem) {
 
         {/* Content */}
         <Text style={styles.title}>{post.title}</Text>
-        {post.image && (
+        {shouldShowImage && post.image && (
           <Image source={{ uri: post.image }} style={styles.image} />
         )}
 
-        {!post.image && post.description && (
+        {shouldShowDescription && post.description && (
           <Text style={styles.description} numberOfLines={4}>{post.description}</Text>
         )}
 
@@ -93,7 +94,6 @@ const styles = StyleSheet.create({
   },
   date: {
     color: 'grey',
-    // fontSize: 11
   },
   username:{
     color: 'grey',
@@ -112,7 +112,6 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     fontSize: 18,
-    // letterSpacing: 0.25
   },
   image: {
     width: '100%',
