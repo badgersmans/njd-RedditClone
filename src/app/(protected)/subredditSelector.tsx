@@ -1,14 +1,18 @@
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
 import groups from '../../../assets/data/groups.json'
 import { useState } from 'react'
-import {AntDesign} from '@expo/vector-icons';
+import {AntDesign, EvilIcons} from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SubredditSelector() {
   const [search, setSearch] = useState<string>('')
+
+  const filteredSubreddits = groups.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())  )
+  // console.log(filteredSubreddits)
+
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
-      <View style={styles.container}>
+      <View style={styles.searchBox}>
         <AntDesign name="search1" size={21} color="grey" />
         <TextInput 
           placeholder='Search for a community'
@@ -16,10 +20,16 @@ export default function SubredditSelector() {
           onChangeText={setSearch}
           placeholderTextColor={'grey'}
         />
+        {search && (
+          <TouchableOpacity onPress={() => setSearch('')} style={{marginLeft: 'auto'}}>
+            <EvilIcons name="close-o" size={24} color="#818187"/>
+          </TouchableOpacity>
+        )
+        }
       </View>
 
       <FlatList 
-        data={groups}
+        data={filteredSubreddits}
         renderItem={(group) => (
           <TouchableOpacity>
             <View style={styles.listContainer}>
@@ -40,7 +50,7 @@ export default function SubredditSelector() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  searchBox: {
     flexDirection: 'row',
     gap: 8,
     backgroundColor: '#DFDFE2',
