@@ -13,8 +13,8 @@ export default function PostListItem({post, isDetailedPost}: PostListItem) {
   const shouldShowImage = isDetailedPost || post.image // is detailed post OR has image
   const shouldShowDescription = isDetailedPost || !post.image // is detailed post OR has NO image
   return (
-    <Link href={`/post/${post.id}`}>
-      <View style={styles.container}>
+    <Link href={`/post/${post.id}`} asChild>
+      <TouchableOpacity style={styles.container}>
         <View style={styles.headerContainer}>
           <Image source={{ uri: post.group.image }} style={styles.headerImage} />
 
@@ -62,7 +62,7 @@ export default function PostListItem({post, isDetailedPost}: PostListItem) {
             <MaterialCommunityIcons name="share-outline" size={19} color="black" style={styles.iconBox} />
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Link>
   )
 }
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     backgroundColor: 'white',
-    width: '100%'
+    // width: '100%'
   },
   headerContainer: {
     flexDirection: 'row',
