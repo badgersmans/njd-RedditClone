@@ -16,8 +16,10 @@ export default function SubredditSelector() {
   const setSubreddit = useSetAtom(selectedSubredditAtom);
   
   const {data, isLoading, error} = useQuery({
-    queryKey: ['subreddit'],
-    queryFn: () => fetchSubreddit()
+    queryKey: ['subreddit', search],
+    queryFn: () => fetchSubreddit(search),
+    staleTime: 5000,
+    placeholderData: (previousData) => previousData
   })
 
   const onSelectSubreddit = (group: Group) => {
@@ -34,7 +36,7 @@ export default function SubredditSelector() {
     return <Text>Failed to load communities</Text>
   }
 
-  const filteredSubreddits = data.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+  // const filteredSubreddits = data.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
   // console.log(filteredSubreddits)
 
   return (
@@ -56,7 +58,7 @@ export default function SubredditSelector() {
       </View>
 
       <FlatList 
-        data={filteredSubreddits}
+        data={data}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => onSelectSubreddit(item)}>
             <View style={styles.listContainer}>
