@@ -12,7 +12,7 @@ export default function HomeScreen() {
   }, [])
 
   const fetchPosts = async () => {
-    const { data, error } = await supabase.from('posts').select('*');
+    const { data, error } = await supabase.from('posts').select('*, group:groups(*)'); // group:groups meaning rename groups to group
     console.log(JSON.stringify(data, null, 2))
     console.log(error)
     setPosts(data)
