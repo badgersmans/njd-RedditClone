@@ -1,18 +1,24 @@
-import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
-import groups from '../../../assets/data/groups.json'
+import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useState } from 'react'
 import {AntDesign, EvilIcons} from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSetAtom } from 'jotai';
 import { selectedSubredditAtom } from '../../atoms'
 import { router } from 'expo-router';
-import { Group } from '../../types/types';
+import { useQuery } from '@tanstack/react-query';
+import { fetchSubreddit } from '../services/subredditService';
+import { Tables } from '../../types/database.types';
+
+type Group = Tables<'groups'>
 
 export default function SubredditSelector() {
   const [search, setSearch] = useState<string>('')
   const setSubreddit = useSetAtom(selectedSubredditAtom);
-
-  const filteredSubreddits = groups.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
+  
+  const {data, isLoading, error} = useQuery({
+    queryKey: ['subreddit'],
+    queryFn: () => fetchSubreddit()
+  })
 
   const onSelectSubreddit = (group: Group) => {
     // console.log('Selected:', group.name);
@@ -20,6 +26,15 @@ export default function SubredditSelector() {
   
     router.back()
   }
+
+  if(isLoading) {
+    return <ActivityIndicator />
+  }
+  if(error || !data) {
+    return <Text>Failed to load communities</Text>
+  }
+
+  const filteredSubreddits = data.filter((group) => group.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()))
   // console.log(filteredSubreddits)
 
   return (

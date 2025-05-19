@@ -15,7 +15,7 @@ export const fetchPosts = async () => {
 export const fetchPostById = async (id: string) => {
   const { data, error } = await supabase
   .from('posts')
-  .select('*, group:groups(*), user:users!posts_user_id_fkey(*)') // group:groups meaning rename groups to group
+  .select('*, group:groups(*), user:users!posts_user_id_fkey(*)')
   .eq('id', id)
   .single();
 
