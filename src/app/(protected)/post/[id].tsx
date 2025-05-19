@@ -1,20 +1,26 @@
-import { View, Text } from 'react-native'
+import { View, Text, ActivityIndicator } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
-import posts from '../../../../assets/data/posts.json'
 import PostListItem from '../../../components/PostListItem'
+import { fetchPostById } from '../../services/postService'
+import { useQuery } from '@tanstack/react-query'
 
 export default function PostDetails() {
-  const {id} = useLocalSearchParams()
-  const detailedPost = posts.find((post) => post.id === id)
-  // console.log(detailedPost)
+  const {id} = useLocalSearchParams<{id: string}>()
+  const {data, isLoading, error} = useQuery({
+    queryKey: ['post', id],
+    queryFn: () => fetchPostById(id)
+  })
 
-  if(!detailedPost) {
+  if(isLoading) {
+    return <ActivityIndicator />
+  }
+  if(error || !data) {
     return <Text>Post not found</Text>
   }
 
   return (
     <View>
-      <PostListItem post={detailedPost} isDetailedPost />
+      <PostListItem post={data} isDetailedPost />
     </View>
   )
 }
