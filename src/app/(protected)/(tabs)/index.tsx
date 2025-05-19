@@ -1,13 +1,7 @@
 import { ActivityIndicator, FlatList, Text } from 'react-native'
 import PostListItem from '../../../components/PostListItem';
 import { supabase } from '../../../lib/supabase';
-import { Tables } from "../../../types/database.types";
 import { useQuery } from '@tanstack/react-query';
-
-type PostWithGroupAndName = Tables<'posts'> & {
-  user: Tables<'users'>
-  group: Tables<'groups'>
-}
 
 export default function HomeScreen() {
   const {data: posts, isLoading, error} = useQuery({
