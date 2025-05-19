@@ -3,6 +3,7 @@ import PostListItem from '../../../components/PostListItem';
 import { supabase } from '../../../lib/supabase';
 import { useEffect, useState } from 'react';
 import { Tables } from "../../../types/database.types";
+import { useQuery } from '@tanstack/react-query';
 
 type PostWithGroupAndName = Tables<'posts'> & {
   user: Tables<'users'>
@@ -10,11 +11,17 @@ type PostWithGroupAndName = Tables<'posts'> & {
 }
 
 export default function HomeScreen() {
-  const [posts, setPosts] = useState<PostWithGroupAndName[]>([])
+  const {data: posts} = useQuery({
+    queryKey: ['posts'],
+    queryFn: () => fetchPosts()
+  });
+  // console.log(posts)
+
+  // const [posts, setPosts] = useState<PostWithGroupAndName[]>([])
   
-  useEffect(() => {
-    fetchPosts()
-  }, [])
+  // useEffect(() => {
+  //   fetchPosts()
+  // }, [])
 
   const fetchPosts = async () => {
     const { data, error } = await supabase.from('posts')
@@ -23,7 +30,7 @@ export default function HomeScreen() {
     if(error) {
       console.log(error)
     } else {
-      setPosts(data)
+      return data
     }
   }
 
