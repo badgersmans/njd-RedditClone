@@ -1,16 +1,54 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView, Image} from 'react-native'
+import { 
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Image
+} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {Ionicons} from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import { useState } from 'react';
 import { useAtom } from "jotai";
 import { selectedSubredditAtom } from '../../../atoms';
+import { useMutation } from '@tanstack/react-query';
+import { supabase } from '../../../lib/supabase';
 
 export default function Create() {
 
   const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<string>('')
   const [subreddit, setSubreddit] = useAtom(selectedSubredditAtom);
+
+  const {mutate, data, isPending, error} = useMutation({
+    mutationFn: async () => {
+      // use supabase to insert a new post
+      const {data, error} = await supabase
+      .from('posts')
+      .insert([
+        {
+          title,
+          description: body,
+          group_id: '46a63107-a875-4da2-b9eb-28b827f015e1',
+          user_id: '199359c7-c5ce-4586-bdd0-34885d92d60f'
+        },
+      ])
+      .select()
+      .single()
+
+      if(error) {
+        throw error
+      } else {
+        return data
+      }
+    }
+  })
+  console.log(data)
+  console.log(error)
 
   const onGoBack = () => {
     setTitle('')
@@ -28,9 +66,13 @@ export default function Create() {
           <Ionicons name="close-outline" size={30} color="black" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={{marginLeft: 'auto'}} onPress={() => console.log('post pressed...')}>
+        <TouchableOpacity 
+          style={{marginLeft: 'auto'}}
+          disabled={isPending}
+          onPress={() => mutate()}
+        >
           <View style={styles.button}>
-            <Text style={styles.buttonText}>Post</Text>
+            <Text style={styles.buttonText}>{isPending ? 'Posting...' : 'Post'}</Text>
           </View>
         </TouchableOpacity>
       </View>
