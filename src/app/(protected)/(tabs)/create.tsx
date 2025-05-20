@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { useAtom } from "jotai";
 import { selectedSubredditAtom } from '../../../atoms';
 import { useMutation } from '@tanstack/react-query';
-import { supabase } from '../../../lib/supabase';
+import { createPost } from '../../services/postService';
 
 export default function Create() {
 
@@ -25,27 +25,13 @@ export default function Create() {
   const [subreddit, setSubreddit] = useAtom(selectedSubredditAtom);
 
   const {mutate, data, isPending, error} = useMutation({
-    mutationFn: async () => {
-      // use supabase to insert a new post
-      const {data, error} = await supabase
-      .from('posts')
-      .insert([
-        {
-          title,
-          description: body,
-          group_id: '46a63107-a875-4da2-b9eb-28b827f015e1',
-          user_id: '199359c7-c5ce-4586-bdd0-34885d92d60f'
-        },
-      ])
-      .select()
-      .single()
-
-      if(error) {
-        throw error
-      } else {
-        return data
-      }
-    }
+    mutationFn: () =>
+      createPost({
+        title, 
+        description: body,
+        group_id: '46a63107-a875-4da2-b9eb-28b827f015e1',
+        user_id: '199359c7-c5ce-4586-bdd0-34885d92d60f'
+      })
   })
   console.log(data)
   console.log(error)
