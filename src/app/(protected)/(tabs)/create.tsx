@@ -16,7 +16,7 @@ import { Link, router } from 'expo-router';
 import { useState } from 'react';
 import { useAtom } from "jotai";
 import { selectedSubredditAtom } from '../../../atoms';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost } from '../../services/postService';
 
 export default function Create() {
@@ -24,6 +24,8 @@ export default function Create() {
   const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<string>('')
   const [subreddit, setSubreddit] = useAtom(selectedSubredditAtom);
+
+  const queryClient = useQueryClient();
 
   const {mutate, isPending} = useMutation({
     mutationFn: () => 
@@ -35,6 +37,10 @@ export default function Create() {
       }),
     onSuccess: (data) => {
       console.log(data)
+
+      // invalidate queries that might have been affected by creating a post
+      queryClient.invalidateQueries({queryKey: ['posts']})
+
       onGoBack()
     },
     onError: (error) => {
