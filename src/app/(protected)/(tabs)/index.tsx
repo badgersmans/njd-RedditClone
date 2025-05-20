@@ -4,7 +4,13 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchPosts } from '../../services/postService';
 
 export default function HomeScreen() {
-  const {data: posts, isLoading, error} = useQuery({
+  const {
+    data: posts, 
+    isLoading, 
+    error,
+    refetch,
+    isRefetching
+  } = useQuery({
     queryKey: ['posts'],
     queryFn: () => fetchPosts()
   });
@@ -22,6 +28,8 @@ export default function HomeScreen() {
       renderItem={({item}) => (
         <PostListItem post={item}/>
       )}
+      onRefresh={refetch}
+      refreshing={isRefetching}
     />
   )
 }

@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image
+  Image,
+  Alert
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import {Ionicons} from '@expo/vector-icons';
@@ -24,17 +25,23 @@ export default function Create() {
   const [body, setBody] = useState<string>('')
   const [subreddit, setSubreddit] = useAtom(selectedSubredditAtom);
 
-  const {mutate, data, isPending, error} = useMutation({
-    mutationFn: () =>
-      createPost({
+  const {mutate, isPending} = useMutation({
+    mutationFn: () => 
+       createPost({
         title, 
         description: body,
         group_id: '46a63107-a875-4da2-b9eb-28b827f015e1',
         user_id: '199359c7-c5ce-4586-bdd0-34885d92d60f'
-      })
+      }),
+    onSuccess: (data) => {
+      console.log(data)
+      onGoBack()
+    },
+    onError: (error) => {
+      console.log(error)
+      Alert.alert('Failed to create post')
+    }
   })
-  console.log(data)
-  console.log(error)
 
   const onGoBack = () => {
     setTitle('')

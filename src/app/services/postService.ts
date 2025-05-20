@@ -6,7 +6,8 @@ type CreatePost = TablesInsert<'posts'>
 export const fetchPosts = async () => {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, group:groups(*), user:users!posts_user_id_fkey(*)'); // group:groups meaning rename groups to group
+    .select('*, group:groups(*), user:users!posts_user_id_fkey(*)') // group:groups meaning rename groups to group
+    .order('created_at', {ascending: false})
   // console.log(JSON.stringify(data, null, 2))
   if (error) {
     throw error
