@@ -28,13 +28,17 @@ export default function Create() {
   const queryClient = useQueryClient();
 
   const {mutate, isPending} = useMutation({
-    mutationFn: () => 
-       createPost({
-        title, 
-        description: body,
-        group_id: '46a63107-a875-4da2-b9eb-28b827f015e1',
-        user_id: '199359c7-c5ce-4586-bdd0-34885d92d60f'
-      }),
+    mutationFn: () => {
+      if(!subreddit) {
+        throw new Error('Please select a community')
+      }
+      return createPost({
+       title, 
+       description: body,
+       group_id: subreddit.id,
+       user_id: '199359c7-c5ce-4586-bdd0-34885d92d60f'
+     })
+    },
     onSuccess: (data) => {
       console.log(data)
 
@@ -45,7 +49,7 @@ export default function Create() {
     },
     onError: (error) => {
       console.log(error)
-      Alert.alert('Failed to create post')
+      Alert.alert('Failed to create post', error.message)
     }
   })
 
