@@ -18,6 +18,7 @@ import { useAtom } from "jotai";
 import { selectedSubredditAtom } from '../../../atoms';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPost } from '../../services/postService';
+import { useSupabase } from '../../../lib/supabase';
 
 export default function Create() {
 
@@ -26,6 +27,7 @@ export default function Create() {
   const [subreddit, setSubreddit] = useAtom(selectedSubredditAtom);
 
   const queryClient = useQueryClient();
+  const supabase = useSupabase()
 
   const {mutate, isPending} = useMutation({
     mutationFn: () => {
@@ -36,8 +38,7 @@ export default function Create() {
        title, 
        description: body,
        group_id: subreddit.id,
-       user_id: '199359c7-c5ce-4586-bdd0-34885d92d60f'
-     })
+     }, supabase)
     },
     onSuccess: (data) => {
       console.log(data)

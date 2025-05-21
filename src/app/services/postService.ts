@@ -1,12 +1,12 @@
-import { supabase } from "../../lib/supabase";
-import { TablesInsert } from "../../types/database.types";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { Database, TablesInsert } from "../../types/database.types";
 
 type CreatePost = TablesInsert<'posts'>
 
-export const fetchPosts = async () => {
+export const fetchPosts = async (supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, group:groups(*), user:users!posts_user_id_fkey(*)') // group:groups meaning rename groups to group
+    .select('*, group:groups(*)') // group:groups meaning rename groups to group
     .order('created_at', {ascending: false})
   // console.log(JSON.stringify(data, null, 2))
   if (error) {
@@ -16,10 +16,10 @@ export const fetchPosts = async () => {
   }
 }
 
-export const fetchPostById = async (id: string) => {
+export const fetchPostById = async (id: string, supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, group:groups(*), user:users!posts_user_id_fkey(*)')
+    .select('*, group:groups(*)')
     .eq('id', id)
     .single();
 
@@ -30,7 +30,7 @@ export const fetchPostById = async (id: string) => {
   }
 }
 
-export const createPost = async (post: CreatePost) => {
+export const createPost = async (post: CreatePost, supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase
     .from('posts')
     .insert(post)

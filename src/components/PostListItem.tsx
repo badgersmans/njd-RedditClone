@@ -10,7 +10,7 @@ type PostListItem = {
 }
 
 type PostWithGroupAndName = Tables<'posts'> & {
-  user: Tables<'users'>
+  // user: Tables<'users'>
   group: Tables<'groups'>
 }
 
@@ -28,7 +28,7 @@ export default function PostListItem({post, isDetailedPost}: PostListItem) {
               <Text style={styles.groupName}>{post.group.name}</Text>
               <Text style={styles.date}>{formatDistanceToNowStrict(post.created_at)}</Text>
             </View>
-            {isDetailedPost && <Text style={styles.username}>{post.user.name}</Text>}
+            {isDetailedPost && <Text style={styles.username}>{post.user?.name}</Text>}
           </View>
 
           <TouchableOpacity style={{marginLeft: 'auto'}}>

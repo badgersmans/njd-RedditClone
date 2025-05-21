@@ -1,3 +1,6 @@
+Need to install the following packages:
+supabase@2.23.4
+Ok to proceed? (y) 
 export type Json =
   | string
   | number
@@ -16,7 +19,7 @@ export type Database = {
           id: string
           parent_id: string | null
           post_id: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           comment: string
@@ -24,7 +27,7 @@ export type Database = {
           id?: string
           parent_id?: string | null
           post_id: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           comment?: string
@@ -32,7 +35,7 @@ export type Database = {
           id?: string
           parent_id?: string | null
           post_id?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -47,13 +50,6 @@ export type Database = {
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "comments_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -84,7 +80,7 @@ export type Database = {
           id: string
           image: string | null
           title: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string | null
@@ -93,7 +89,7 @@ export type Database = {
           id?: string
           image?: string | null
           title: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string | null
@@ -102,7 +98,7 @@ export type Database = {
           id?: string
           image?: string | null
           title?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -112,28 +108,21 @@ export type Database = {
             referencedRelation: "groups"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "posts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
       }
       upvotes: {
         Row: {
-          created_at: string | null
+          created_at: string
           post_id: string
           user_id: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           post_id: string
-          user_id: string
+          user_id?: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           post_id?: string
           user_id?: string
         }
@@ -145,39 +134,17 @@ export type Database = {
             referencedRelation: "posts"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "upvotes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
-      }
-      users: {
-        Row: {
-          id: string
-          image: string | null
-          name: string
-        }
-        Insert: {
-          id?: string
-          image?: string | null
-          name: string
-        }
-        Update: {
-          id?: string
-          image?: string | null
-          name?: string
-        }
-        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      requesting_user_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

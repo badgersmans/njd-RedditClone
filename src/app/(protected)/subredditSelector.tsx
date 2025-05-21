@@ -8,16 +8,18 @@ import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { fetchSubreddit } from '../services/subredditService';
 import { Tables } from '../../types/database.types';
+import { useSupabase } from '../../lib/supabase';
 
 type Group = Tables<'groups'>
 
 export default function SubredditSelector() {
   const [search, setSearch] = useState<string>('')
   const setSubreddit = useSetAtom(selectedSubredditAtom);
-  
+  const supabase = useSupabase()
+
   const {data, isLoading, error} = useQuery({
     queryKey: ['subreddit', search],
-    queryFn: () => fetchSubreddit(search),
+    queryFn: () => fetchSubreddit(search, supabase),
     staleTime: 5000,
     placeholderData: (previousData) => previousData
   })
