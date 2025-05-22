@@ -2,6 +2,7 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Database, TablesInsert } from "../../types/database.types";
 
 type CreatePost = TablesInsert<'posts'>
+// type DeletePost = tables<'posts'>
 
 export const fetchPosts = async (supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase
@@ -34,6 +35,21 @@ export const createPost = async (post: CreatePost, supabase: SupabaseClient<Data
   const { data, error } = await supabase
     .from('posts')
     .insert(post)
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  } else {
+    return data
+  }
+}
+
+export const deletePostById = async (id: string, supabase: SupabaseClient<Database>) => {
+  const { data, error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', id)
     .select()
     .single()
 
