@@ -7,7 +7,7 @@ type CreatePost = TablesInsert<'posts'>
 export const fetchPosts = async (supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, group:groups(*)') // group:groups meaning rename groups to group
+    .select('*, group:groups(*), upvotes(value.sum())') // group:groups meaning rename groups to group
     .order('created_at', {ascending: false})
   // console.log(JSON.stringify(data, null, 2))
   if (error) {
@@ -20,9 +20,10 @@ export const fetchPosts = async (supabase: SupabaseClient<Database>) => {
 export const fetchPostById = async (id: string, supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase
     .from('posts')
-    .select('*, group:groups(*)')
+    .select('*, group:groups(*), upvotes(value.sum())')
     .eq('id', id)
     .single();
+    console.log(data)
 
   if (error) {
     throw error
@@ -30,6 +31,21 @@ export const fetchPostById = async (id: string, supabase: SupabaseClient<Databas
     return data
   }
 }
+
+// export const fetchPostUpvotes = async (id: string, supabase: SupabaseClient<Database>) => {
+//   const { data, error } = await supabase
+//     .from('upvotes')
+//     .select('value.sum()')
+//     .eq('post_id', id)
+//     console.log(error)
+//     // console.log(JSON.stringify(data, null, 2))
+
+//   if (error) {
+//     throw error
+//   } else {
+//     return data
+//   }
+// }
 
 export const createPost = async (post: CreatePost, supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase

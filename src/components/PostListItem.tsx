@@ -3,10 +3,13 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Link } from 'expo-router';
 import { Tables } from "../types/database.types";
+import { useQuery } from '@tanstack/react-query';
+import { useSupabase } from '../lib/supabase';
 
 type PostListItem = {
   post: PostWithGroupAndName,
-  isDetailedPost?: boolean
+  isDetailedPost?: boolean,
+  upvotes: {sum: number}[]
 }
 
 type PostWithGroupAndName = Tables<'posts'> & {
@@ -17,6 +20,14 @@ type PostWithGroupAndName = Tables<'posts'> & {
 export default function PostListItem({post, isDetailedPost}: PostListItem) {
   const shouldShowImage = isDetailedPost || post.image // is detailed post OR has image
   const shouldShowDescription = isDetailedPost || !post.image // is detailed post OR has NO image
+
+  const supabase = useSupabase()
+  
+  // const {data, isLoading, error} = useQuery({
+  //   queryKey: ['posts', post.id],
+  //   queryFn: () => fetchPostUpvotes(post.id, supabase),
+  // })
+
   return (
     <Link href={`/post/${post.id}`} asChild>
       <TouchableOpacity style={styles.container}>
@@ -53,7 +64,7 @@ export default function PostListItem({post, isDetailedPost}: PostListItem) {
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <View style={[{ flexDirection: 'row' }, styles.iconBox]}>
               <MaterialCommunityIcons name="arrow-up-bold-outline" size={19} color="black" />
-              <Text style={{ fontWeight: '500', marginLeft: 5, alignSelf: 'center' }}>{post.upvotes}</Text>
+              <Text style={{ fontWeight: '500', marginLeft: 5, alignSelf: 'center' }}>{post.upvotes[0].sum || 0}</Text>
               <View style={{ width: 1, backgroundColor: '#D4D4D4', height: 14, marginHorizontal: 7, alignSelf: 'center' }} />
               <MaterialCommunityIcons name="arrow-down-bold-outline" size={19} color="black" />
             </View>
