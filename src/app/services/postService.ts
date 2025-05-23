@@ -2,7 +2,6 @@ import { SupabaseClient } from "@supabase/supabase-js";
 import { Database, TablesInsert } from "../../types/database.types";
 
 type CreatePost = TablesInsert<'posts'>
-// type DeletePost = tables<'posts'>
 
 export const fetchPosts = async (supabase: SupabaseClient<Database>) => {
   const { data, error } = await supabase
