@@ -108,14 +108,11 @@ export default function PostListItem({ post, isDetailedPost }: PostListItem) {
         {/* Upvote Buttons */}
         <View style={styles.footerButtonContainer}>
           <TouchableOpacity onPress={() => onVotePressed(1)} style={styles.left}>
-            {
-              isUpvoted ? (
-                <MaterialCommunityIcons name="arrow-up-bold" size={20} color="#EB5528" />
-              ) : (
-                <MaterialCommunityIcons name="arrow-up-bold-outline" size={20} color={'black'} />
-              )
-            }
-
+            <MaterialCommunityIcons 
+              name={isUpvoted ? "arrow-up-bold" : "arrow-up-bold-outline"} 
+              size={20} 
+              color={isUpvoted ? "#EB5528" : "black"}  
+            />
               <Text style={[styles.upvoteText,
                 {
                   color: isUpvoted
@@ -128,16 +125,13 @@ export default function PostListItem({ post, isDetailedPost }: PostListItem) {
           </TouchableOpacity>
 
           <View style={styles.voteSeparator} />
-
-          <TouchableOpacity onPress={() => onVotePressed(-1)} style={styles.right}>
-            {
-              isDownvoted ? (
-                <MaterialCommunityIcons name="arrow-down-bold" size={20} color="#695CF7" />
-              ) : (
-                <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} color={'black'} />
-              )
-            }
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => onVotePressed(-1)} style={styles.right}>
+              <MaterialCommunityIcons 
+                name={isDownvoted ? "arrow-down-bold" : "arrow-down-bold-outline"} 
+                size={20} 
+                color={isDownvoted ? "#695CF7" : "black"}  
+              />
+            </TouchableOpacity>
         </View>
 
         <View style={{ marginLeft: 5 }}>
