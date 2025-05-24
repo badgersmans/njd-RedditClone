@@ -1,6 +1,3 @@
-Need to install the following packages:
-supabase@2.23.4
-Ok to proceed? (y) 
 export type Json =
   | string
   | number
@@ -115,16 +112,19 @@ export type Database = {
           created_at: string
           post_id: string
           user_id: string
+          value: number
         }
         Insert: {
           created_at?: string
           post_id: string
           user_id?: string
+          value?: number
         }
         Update: {
           created_at?: string
           post_id?: string
           user_id?: string
+          value?: number
         }
         Relationships: [
           {

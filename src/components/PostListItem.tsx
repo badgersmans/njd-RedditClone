@@ -3,14 +3,16 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Link } from 'expo-router';
 import { Tables } from "../types/database.types";
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSupabase } from '../lib/supabase';
-import { upvotePost } from '../app/services/upvotesService';
+import { deleteMyVotes, selectMyVotes, upvotePost } from '../app/services/upvotesService';
+import { useSession } from '@clerk/clerk-expo';
+import { useState } from 'react';
 
 type PostListItem = {
   post: PostWithGroupAndName,
   isDetailedPost?: boolean,
-  upvotes: {sum: number}[]
+  upvotes: { sum: number }[]
 }
 
 type PostWithGroupAndName = Tables<'posts'> & {
@@ -18,29 +20,55 @@ type PostWithGroupAndName = Tables<'posts'> & {
   group: Tables<'groups'>
 }
 
-export default function PostListItem({post, isDetailedPost}: PostListItem) {
+export default function PostListItem({ post, isDetailedPost }: PostListItem) {
   const shouldShowImage = isDetailedPost || post.image // is detailed post OR has image
   const shouldShowDescription = isDetailedPost || !post.image // is detailed post OR has NO image
   const supabase = useSupabase()
+  const queryClient = useQueryClient();
+  const {session} = useSession();
 
-    const {mutate: upvote, isPending} = useMutation({
-    mutationFn: (value: 1 | -1) =>  upvotePost(post_id, value, supabase),
+  const {data: myVote, isLoading, error} = useQuery({
+    queryKey: ['posts', post.id, 'my-votes'],
+    queryFn: () => selectMyVotes(post.id, session?.user.id, supabase)
+  })
+  const [localVote, setLocalVote] = useState(myVote?.value ?? 0);
+  const isUpvoted = localVote === 1;
+  const isDownvoted = localVote === -1;
+  // console.log(myVote)
+
+  const { mutate: upvote, isPending } = useMutation({
+    mutationFn: (value: 1 | -1) => upvotePost(post.id, value, supabase),
     onSuccess: (data) => {
-      console.log(data)
-
-      // queryClient.invalidateQueries({queryKey: ['posts']})
-
-      // onGoBack()
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
     },
     onError: (error) => {
       console.log(error)
     }
   })
 
-  // const {data, isLoading, error} = useQuery({
-  //   queryKey: ['posts', post.id],
-  //   queryFn: () => fetchPostUpvotes(post.id, supabase),
-  // })
+  const { mutate: removeVote } = useMutation({
+    mutationFn: () => deleteMyVotes(post.id, session?.user.id, supabase),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] })
+    },
+    onError: (error) => {
+      console.log(error)
+    }
+  })
+
+  const onVotePressed = (vote: 1 | -1) => {
+    
+    // console.log(`isUpvoted? ${isUpvoted}`)
+    // console.log(`isDownvoted ${isDownvoted}`)
+
+  if ((vote === 1 && isUpvoted) || (vote === -1 && isDownvoted)) {
+      removeVote()
+      setLocalVote(0)
+    } else {
+      upvote(vote)
+      setLocalVote(vote)
+    }
+  }
 
   return (
     <View>
@@ -50,14 +78,14 @@ export default function PostListItem({post, isDetailedPost}: PostListItem) {
             <Image source={{ uri: post.group.image }} style={styles.headerImage} />
 
             <View>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.groupName}>{post.group.name}</Text>
                 <Text style={styles.date}>{formatDistanceToNowStrict(post.created_at)}</Text>
               </View>
               {isDetailedPost && <Text style={styles.username}>{post.user?.name}</Text>}
             </View>
 
-            <TouchableOpacity style={{marginLeft: 'auto'}}>
+            <TouchableOpacity style={{ marginLeft: 'auto' }}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Join</Text>
               </View>
@@ -79,19 +107,40 @@ export default function PostListItem({post, isDetailedPost}: PostListItem) {
       <View style={styles.footer}>
         {/* Upvote Buttons */}
         <View style={styles.footerButtonContainer}>
-            <TouchableOpacity style={styles.left}>
-              <MaterialCommunityIcons name="arrow-up-bold-outline" size={19} color="black" />
-              <Text style={styles.upvoteText}>{post.upvotes[0].sum || 0}</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={() => onVotePressed(1)} style={styles.left}>
+            {
+              isUpvoted ? (
+                <MaterialCommunityIcons name="arrow-up-bold" size={20} color="#EB5528" />
+              ) : (
+                <MaterialCommunityIcons name="arrow-up-bold-outline" size={20} color={'black'} />
+              )
+            }
 
-            <View style={styles.voteSeparator} />
+              <Text style={[styles.upvoteText,
+                {
+                  color: isUpvoted
+                    ? '#EB5528'       
+                    : isDownvoted
+                    ? '#695CF7'       
+                    : 'black'
+                }
+              ]}>{post.upvotes[0].sum || 0}</Text>            
+          </TouchableOpacity>
 
-            <TouchableOpacity style={styles.right}>
-              <MaterialCommunityIcons name="arrow-down-bold-outline" size={19} color="black" />
-            </TouchableOpacity>
+          <View style={styles.voteSeparator} />
+
+          <TouchableOpacity onPress={() => onVotePressed(-1)} style={styles.right}>
+            {
+              isDownvoted ? (
+                <MaterialCommunityIcons name="arrow-down-bold" size={20} color="#695CF7" />
+              ) : (
+                <MaterialCommunityIcons name="arrow-down-bold-outline" size={20} color={'black'} />
+              )
+            }
+          </TouchableOpacity>
         </View>
 
-        <View style={{marginLeft: 5}}>
+        <View style={{ marginLeft: 5 }}>
           <TouchableOpacity style={styles.footerButtonContainer}>
             <MaterialCommunityIcons name="comment-outline" size={19} color="black" />
           </TouchableOpacity>
@@ -140,7 +189,7 @@ const styles = StyleSheet.create({
   date: {
     color: 'grey',
   },
-  username:{
+  username: {
     color: 'grey',
     marginTop: 3
   },
@@ -173,6 +222,7 @@ const styles = StyleSheet.create({
     // marginTop: 10
     paddingHorizontal: 15,
     backgroundColor: 'white',
+    paddingBottom: 5
     // gap: 5,
   },
   iconBox: {
@@ -204,15 +254,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  upvoteText: {
-    marginRight: 10
-  },
   right: {
     marginLeft: 5,
     // backgroundColor: 'yellow',
     // paddingHorizontal: 4,
     // marginRight: 13,
     // paddingRight: 50
+  },
+  upvoteText: {
+    marginLeft: -5,
+    marginRight: 15
   },
   voteSeparator: {
     height: 12,

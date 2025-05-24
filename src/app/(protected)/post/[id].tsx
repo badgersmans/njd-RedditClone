@@ -20,7 +20,7 @@ export default function PostDetails() {
     const {mutate: deletePost, isPending} = useMutation({
     mutationFn: () => deletePostById(id, supabase),
     onSuccess: (data) => {
-      console.log(data)
+      // console.log(data)
 
       // invalidate queries that might have been affected by deleting a post
       queryClient.invalidateQueries({queryKey: ['posts']})

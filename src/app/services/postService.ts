@@ -22,7 +22,7 @@ export const fetchPostById = async (id: string, supabase: SupabaseClient<Databas
     .select('*, group:groups(*), upvotes(value.sum())')
     .eq('id', id)
     .single();
-    console.log(data)
+    // console.log(data)
 
   if (error) {
     throw error
